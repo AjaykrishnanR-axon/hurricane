@@ -1,0 +1,71 @@
+import os
+
+def parser(FILE):
+	pass
+
+FILE = open("./hurdat2-1851-2022-050423.txt", "r")
+lines = FILE.readlines()
+
+totalHurricanes = 0
+# returnList = {"year": {"month":"count"}}
+totalNames = []
+monthlyCount = {}
+yearlyCount = {}
+
+yearCounter = ""
+monthCounter = ""
+
+months = {
+	"01":"Jan",
+	"02":"Feb",
+	"03":"Mar",
+	"04":"Apr",
+	"05":"May",
+	"06":"Jun",
+	"07":"Jul",
+	"08":"Aug",
+	"09":"Sep",
+	"10":"Oct",
+	"11":"Nov",
+	"12":"Dec"
+}
+
+# hitLines = [line for line in lines if line.startswith("AL")]
+
+for i in range(len(lines)):
+	if lines[i].startswith("AL") or i == (len(lines) - 1):
+		# hit a hurricane
+		hurricaneName = lines[i].split(",")[0]
+		totalHurricanes+=1
+		totalNames.append(hurricaneName)
+		hurricaneYear = hurricaneName[4:]
+		if i != (len(lines) - 1):
+			hurricaneMonth = lines[i+1].split(",")[0][4:6]
+		if yearCounter == hurricaneYear:
+			if monthCounter != hurricaneMonth:
+				monthCounter = hurricaneMonth
+				monthlyCount[months[hurricaneMonth]] = 1
+			else:
+				monthlyCount[months[hurricaneMonth]]+=1
+		elif yearCounter == "":
+			yearCounter = hurricaneYear
+			monthlyCount[months[hurricaneMonth]] = 1
+		elif i == (len(lines) - 1):
+			yearlyCount[yearCounter] = monthlyCount
+
+		else:
+			yearlyCount[yearCounter] = monthlyCount
+			yearCounter = hurricaneYear
+			monthCounter = ""
+			monthlyCount = {}
+			monthlyCount[months[hurricaneMonth]] = 1
+
+		i+=2 # skip 1 because all hurricanes have atleast 1 track record
+
+	else:
+		i+=1
+# print(len(lines))
+# print(totalHurricanes)
+# print(totalNames)
+# print(monthlyCount)
+print(yearlyCount)
